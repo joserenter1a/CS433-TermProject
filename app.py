@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sys import platform as sys_pf
 from tkinter import filedialog
+from emailrep import EmailRep
 
 
 if sys_pf == 'darwin':
@@ -36,11 +37,11 @@ class App(tk.Tk):
         self.scan_button = tk.Button(self, text="Scan for AI", command=self.ai_scan)
         self.scan_button.place(x = 100, y = 400, relheight = 0.04)
 
-        self.scan__aiplag_button = tk.Button(self, text="Scan for AI & Plagiarism", command=self.ai_plag_scan)
-        self.scan__aiplag_button.place(x = 177.5, y = 400, relheight = 0.04)
+        self.scan__aiplag_button = tk.Button(self, text="AI URL Scan", command=self.ai_plag_scan)
+        self.scan__aiplag_button.place(x = 185, y = 400, relheight = 0.04)
         
-        self.scan__aiurl_button = tk.Button(self, text="AI URL Scan", command=self.ai_scan)
-        self.scan__aiurl_button.place(x = 325, y = 400, relheight = 0.04)
+        self.scan__aiurl_button = tk.Button(self, text="Email Reputation Scan", command=self.scan_email)
+        self.scan__aiurl_button.place(x = 275, y = 400, relheight = 0.04)
 
 
         # Run the Tkinter event loop
@@ -102,7 +103,6 @@ class App(tk.Tk):
         # self.word_count_label.config(text=f'AI Generation Score: Original: {original_pct}% AI: {ai_pct} %')
         labels = [ "Original", "Ai"]
         colors = [ '#50ad50','#cc2530']
-        print(type(pcts), type(pcts[0]))
         fig, ax = plt.subplots()
         ax.pie(pcts, labels=labels, colors=colors, autopct='%1.1f%%')
         canvas = FigureCanvasTkAgg(fig, self)
@@ -135,6 +135,17 @@ class App(tk.Tk):
             score = (parsed_dict["plagiarism"])
         total_pct = score["total_text_score"]
         print(response.text)
+    def scan_email(self):
+        email = self.text_entry.get("1.0", "end-1c")
+        url = f"https://emailrep.io/{email}?summary=true"
+
+        headers = {"accept": "application/json"}
+
+        response = requests.get(url, headers=headers)
+        parsed_dict = self.parse_dict_string(response.text)
+        print(response.text)
+        print(parsed_dict["summary"])
+        print(parsed_dict["reputation"])
 
     
 
