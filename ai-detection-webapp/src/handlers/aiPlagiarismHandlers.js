@@ -22,10 +22,14 @@ export const performAIPlagiarismScan = async (text) => {
         }
 
         const responseData = await response.json();
-        const aiScore = responseData.ai.score;
-        const plagiarismScore = responseData.plagiarism.total_text_score;
-        console.log('AI Score:', aiScore);
-        console.log('Plagirism Score:', plagiarismScore)
+
+        const results = {
+            aiScore: responseData.ai.score.ai,
+            humanScore: responseData.ai.score.original,
+            plagiarismScore: responseData.plagiarism.total_text_score,
+        }
+
+        return results;
     } catch (e) {
         console.error('Error performing AI & Plagiarism scan:', e.message);
         throw e;

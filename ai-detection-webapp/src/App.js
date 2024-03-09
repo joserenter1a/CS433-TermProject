@@ -18,27 +18,46 @@ function App() {
   };
 
   const handleButtonClick = async (action) => {
-    // Perform different actions based on the button clicked
-    switch (action) {
-      case actions.ai:
-        // TODO: Update UI based on API response
-        await performAIScan(text);
-        break;
-      case actions.plagiarism:
-        // TODO: Update UI based on API response
-        await performPlagiarismScan(text);
-        break;
-      case actions.ai_plagiarism:
-        // TODO: Update UI based on API response
-        await performAIPlagiarismScan(text);
-        break;
-      default:
-        break;
+    try {
+      let response;
+      
+      switch (action) {
+        case actions.ai:
+          response = await performAIScan(text);
+          console.log('AI Score:', response.aiScore);
+          console.log('Human Score:', response.humanScore);
+          break;
+        case actions.plagiarism:
+          response = await performPlagiarismScan(text);
+          console.log('Plagiarism Score:', response.plagiarismScore);
+          break;
+        case actions.ai_plagiarism:
+          response  = await performAIPlagiarismScan(text);
+          console.log('AI Score:', response.aiScore);
+          console.log('Human Score:', response.humanScore);
+          console.log('Plagiarism Score:', response.plagiarismScore);
+          break;
+        default:
+          break;
+      }
+
+    } catch (e) {
+      console.error('Error:', e.message);
     }
   };
 
   return (
     <div className="App">
+      <div className="header">
+        <h1 className="title">Authenticity Master</h1>
+        <h2 className="slogan">Bringing You the Truth, Because Lies are Just too Mainstream!</h2>
+        <p className="description">
+          Whether you're verifying the source of emails, fact checking news articles, 
+          double checking suspicious links or just curious about the origin piece of a text, we got you covered. 
+          With a powerful AI algorithms and plagiarism detection technology, we sift through the digital haystack 
+          to bring you the truth one scan at a time.
+        </p>
+      </div>
       <textarea
         className="big-text-box"
         value={text}

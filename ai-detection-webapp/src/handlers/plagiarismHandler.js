@@ -22,8 +22,13 @@ export const performPlagiarismScan = async (text) => {
         }
 
         const responseData = await response.json();
-        const aiScore = responseData.total_text_score;
-        console.log('Plagiarism Score:', aiScore);
+
+        const results = {
+            plagiarismScore: responseData.total_text_score,
+        }
+
+        return results;
+
     } catch (e) {
         console.error('Error performing Plagiarism scan:', e.message);
         throw e;

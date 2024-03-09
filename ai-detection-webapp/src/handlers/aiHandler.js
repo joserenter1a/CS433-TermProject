@@ -22,8 +22,14 @@ export const performAIScan = async (text) => {
         }
 
         const responseData = await response.json();
-        const aiScore = responseData.score;
-        console.log('AI Generation Score:', aiScore);
+        
+        const results = {
+            aiScore: responseData.score.ai,
+            humanScore: responseData.score.original,
+        }
+
+        return results;
+        
     } catch (e) {
         console.error('Error performing AI scan:', e.message);
         throw e;
