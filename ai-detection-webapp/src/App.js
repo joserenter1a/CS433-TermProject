@@ -1,11 +1,14 @@
+import { performAIScan } from './handlers/aiHandler';
+import { performPlagiarismScan } from './handlers/plagiarismHandler';
+import { performAIPlagiarismScan } from './handlers/aiPlagiarismHandlers';
 import React, { useState } from 'react';
 import './App.css';
 
 function App() {
   const actions = {
-    ai: 'ai_scan',
-    plagiarism: 'plagiarism_scan',
-    ai_plagiarism: 'ai_plagiarism_scan',
+    ai: 'ai',
+    plagiarism: 'plagiarism',
+    ai_plagiarism: 'ai_plagiarism',
   }
 
   const [text, setText] = useState('');
@@ -14,20 +17,20 @@ function App() {
     setText(event.target.value);
   };
 
-  const handleButtonClick = (action) => {
+  const handleButtonClick = async (action) => {
     // Perform different actions based on the button clicked
     switch (action) {
       case actions.ai:
-        // Code for action 1
-        console.log('Button 1 clicked');
+        // TODO: Update UI based on API response
+        await performAIScan(text);
         break;
       case actions.plagiarism:
-        // Code for action 2
-        console.log('Button 2 clicked');
+        // TODO: Update UI based on API response
+        await performPlagiarismScan(text);
         break;
       case actions.ai_plagiarism:
-        // Code for action 3
-        console.log('Button 3 clicked');
+        // TODO: Update UI based on API response
+        await performAIPlagiarismScan(text);
         break;
       default:
         break;
