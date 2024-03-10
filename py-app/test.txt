@@ -1,0 +1,1 @@
+This function read_file_and_display takes a filename as input, reads the contents of the file, and then creates a Tkinter Text widget to display the contents. You can specify the path to your text file in the function call. Make sure to replace "example.txt" with the actual path to your text file.
