@@ -23,31 +23,32 @@ class App(tk.Tk):
         
         # Create label to display word count
         self.word_count_label = tk.Label(self, text="Start typing or ")
-        self.word_count_label.place(x = 100, y = 80, relheight = 0.04)
+        self.word_count_label.place(x = 100, y = 30, relheight = 0.04)
         self.word_count_label.configure(background="#90b7f5")
 
         self.upload_button = tk.Button(self, text="Upload File", command=self.upload_file)
-        self.upload_button.place(x = 190, y = 80, relheight = 0.04)
+        self.upload_button.place(x = 190, y = 30, relheight = 0.04)
         self.upload_button.configure(background="#518ded")
         # Create text entry widget
         self.text_entry = tk.Text(self)
-        self.text_entry.place(x = 100, y = 110, relheight=.38, relwidth=.4)
+        self.text_entry.place(x = 100, y = 60, relheight=.38, relwidth=.4)
 
         # Create count button
         self.scan_button = tk.Button(self, text="Scan for AI", command=self.ai_scan)
-        self.scan_button.place(x = 100, y = 400, relheight = 0.04)
+        self.scan_button.place(x = 100, y = 300, relheight = 0.04)
         self.scan_button.configure(background="#518ded")
 
         self.scan__aiplag_button = tk.Button(self, text="AI URL Scan", command=self.ai_url_scan)
-        self.scan__aiplag_button.place(x = 185, y = 400, relheight = 0.04)
+        self.scan__aiplag_button.place(x = 185, y = 300, relheight = 0.04)
         self.scan__aiplag_button.configure(background="#518ded")
         
         self.scan__aiurl_button = tk.Button(self, text="Email Reputation Scan", command=self.scan_email)
-        self.scan__aiurl_button.place(x = 275, y = 400, relheight = 0.04)
+        self.scan__aiurl_button.place(x = 275, y = 300, relheight = 0.04)
         self.scan__aiurl_button.configure(background="#518ded")
 
-        self.email_summary = tk.Label(self, text="Email Summary:")
-        self.email_summary.place(x = 100, y = 440, relwidth = 0.4)
+        self.email_summary = tk.Text(self)
+        self.email_summary.configure(state='disabled')
+        self.email_summary.place(x = 100, y = 350, relwidth = 0.4, relheight=0.3)
 
 
         # Run the Tkinter event loop
@@ -113,7 +114,7 @@ class App(tk.Tk):
         ax.pie(pcts, labels=labels, colors=colors, autopct='%1.1f%%')
         plt.title("AI Generation Score (Text/File)")
         canvas = FigureCanvasTkAgg(fig, self)
-        canvas.get_tk_widget().place(x=500, y=100, relheight=0.35, relwidth=0.35)
+        canvas.get_tk_widget().place(x=500, y=50, relheight=0.35, relwidth=0.35)
         return canvas.draw()
     
     def ai_url_scan(self):
@@ -146,10 +147,12 @@ class App(tk.Tk):
         ax.pie(pcts, labels=labels, colors=colors, autopct='%1.1f%%')
         plt.title("AI Generation Score (URL)")
         canvas = FigureCanvasTkAgg(fig, self)
-        canvas.get_tk_widget().place(x=500, y=350, relheight=0.35, relwidth=0.35)
+        canvas.get_tk_widget().place(x=500, y=300, relheight=0.35, relwidth=0.35)
         return canvas.draw()
     
     def scan_email(self):
+        self.email_summary.configure(state='normal')
+
         email = self.text_entry.get("1.0", "end-1c")
         url = f"https://emailrep.io/{email}?summary=true"
 
@@ -157,11 +160,13 @@ class App(tk.Tk):
 
         response = requests.get(url, headers=headers)
         parsed_dict = self.parse_dict_string(response.text)
-        print(response.text)
-        print(parsed_dict["summary"])
-        summary = parsed_dict["summary"]
-        self.email_summary.configure(text=summary)
-        return summary
+        summary = parsed_dict
+        if summary["status"] == 'fail':
+            print(summary['reason'])
+            self.email_summary.insert(tk.END, f'{summary["reason"]}')
+        else:
+            self.email_summary.insert(tk.END, f'{summary["summary"]}')
+        return self.email_summary.configure(state='disabled')
 
     
 
