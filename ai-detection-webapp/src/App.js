@@ -1,6 +1,5 @@
 import { performAIScan } from './handlers/aiHandler';
-import { performPlagiarismScan } from './handlers/plagiarismHandler';
-import { performAIPlagiarismScan } from './handlers/aiPlagiarismHandlers';
+import { performURLScan } from './handlers/urlHandler';
 import { AIScanResult } from './components/aiResults/aiScanResultsComponent'
 import React, { useState } from 'react';
 import './App.css';
@@ -10,6 +9,7 @@ function App() {
     ai: 'ai',
     plagiarism: 'plagiarism',
     ai_plagiarism: 'ai_plagiarism',
+    url: 'url'
   }
 
   const [text, setText] = useState('');
@@ -28,15 +28,9 @@ function App() {
           response = await performAIScan(text);
           setAIScanResult(response);
           break;
-        case actions.plagiarism:
-          response = await performPlagiarismScan(text);
-          console.log('Plagiarism Score:', response.plagiarismScore);
-          break;
-        case actions.ai_plagiarism:
-          response  = await performAIPlagiarismScan(text);
-          console.log('AI Score:', response.aiScore);
-          console.log('Human Score:', response.humanScore);
-          console.log('Plagiarism Score:', response.plagiarismScore);
+        case actions.url:
+          response = await performURLScan(text);
+          setAIScanResult(response);
           break;
         default:
           break;
@@ -69,11 +63,8 @@ function App() {
         <button className="button" onClick={() => handleButtonClick(actions.ai)}>
           AI Scan
         </button>
-        <button className="button" onClick={() => handleButtonClick(actions.plagiarism)}>
-          Plagiarism Scan
-        </button>
-        <button className="button" onClick={() => handleButtonClick(actions.ai_plagiarism)}>
-          AI Plagiarism Scan
+        <button className="button" onClick={() => handleButtonClick(actions.url)}>
+          URL Scan
         </button>
       </div>
       {aiScanResult && <AIScanResult response={aiScanResult} />}
