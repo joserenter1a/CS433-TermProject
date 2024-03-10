@@ -1,6 +1,7 @@
 import { performAIScan } from './handlers/aiHandler';
 import { performPlagiarismScan } from './handlers/plagiarismHandler';
 import { performAIPlagiarismScan } from './handlers/aiPlagiarismHandlers';
+import { AIScanResult } from './components/aiResults/aiScanResultsComponent'
 import React, { useState } from 'react';
 import './App.css';
 
@@ -12,6 +13,7 @@ function App() {
   }
 
   const [text, setText] = useState('');
+  const [aiScanResult, setAIScanResult] = useState(null);
 
   const handleTextChange = (event) => {
     setText(event.target.value);
@@ -24,8 +26,7 @@ function App() {
       switch (action) {
         case actions.ai:
           response = await performAIScan(text);
-          console.log('AI Score:', response.aiScore);
-          console.log('Human Score:', response.humanScore);
+          setAIScanResult(response);
           break;
         case actions.plagiarism:
           response = await performPlagiarismScan(text);
@@ -75,6 +76,7 @@ function App() {
           AI Plagiarism Scan
         </button>
       </div>
+      {aiScanResult && <AIScanResult response={aiScanResult} />}
     </div>
   );
 }
