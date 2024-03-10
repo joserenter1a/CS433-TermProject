@@ -167,12 +167,3 @@ class App(tk.Tk):
         else:
             self.email_summary.insert(tk.END, f'{summary["summary"]}')
         return self.email_summary.configure(state='disabled')
-
-    
-
-def UI():
-    app = App('Title')
-    return app
-
-if __name__ == '__main__':
-    UI()
