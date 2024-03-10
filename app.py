@@ -1,5 +1,4 @@
 import tkinter as tk
-
 import requests 
 import json 
 import matplotlib.pyplot as plt
@@ -20,27 +19,35 @@ class App(tk.Tk):
         self.title(title)
         self.geometry('800x600')
         self.resizable(False, False)
-        self.configure(background="#9177c7")
+        self.configure(background='#90b7f5')
         
         # Create label to display word count
         self.word_count_label = tk.Label(self, text="Start typing or ")
         self.word_count_label.place(x = 100, y = 80, relheight = 0.04)
-        self.word_count_label.configure(background="#9177c7")
+        self.word_count_label.configure(background="#90b7f5")
 
         self.upload_button = tk.Button(self, text="Upload File", command=self.upload_file)
         self.upload_button.place(x = 190, y = 80, relheight = 0.04)
+        self.upload_button.configure(background="#518ded")
         # Create text entry widget
         self.text_entry = tk.Text(self)
         self.text_entry.place(x = 100, y = 110, relheight=.38, relwidth=.4)
+
         # Create count button
         self.scan_button = tk.Button(self, text="Scan for AI", command=self.ai_scan)
         self.scan_button.place(x = 100, y = 400, relheight = 0.04)
+        self.scan_button.configure(background="#518ded")
 
         self.scan__aiplag_button = tk.Button(self, text="AI URL Scan", command=self.ai_url_scan)
         self.scan__aiplag_button.place(x = 185, y = 400, relheight = 0.04)
+        self.scan__aiplag_button.configure(background="#518ded")
         
         self.scan__aiurl_button = tk.Button(self, text="Email Reputation Scan", command=self.scan_email)
         self.scan__aiurl_button.place(x = 275, y = 400, relheight = 0.04)
+        self.scan__aiurl_button.configure(background="#518ded")
+
+        self.email_summary = tk.Label(self, text="Email Summary:")
+        self.email_summary.place(x = 100, y = 440, relwidth = 0.4)
 
 
         # Run the Tkinter event loop
@@ -152,7 +159,9 @@ class App(tk.Tk):
         parsed_dict = self.parse_dict_string(response.text)
         print(response.text)
         print(parsed_dict["summary"])
-        print(parsed_dict["reputation"])
+        summary = parsed_dict["summary"]
+        self.email_summary.configure(text=summary)
+        return summary
 
     
 
