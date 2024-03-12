@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import requests 
 import json 
 import matplotlib.pyplot as plt
@@ -19,45 +20,78 @@ class App(tk.Tk):
         self.title(title)
         self.geometry('800x600')
         self.resizable(False, False)
-        self.configure(background='#90b7f5')
+        self.configure(background='#b3c0c9')
         
-        # Create label to display word count
-        self.word_count_label = tk.Label(self, text="Start typing or ")
-        self.word_count_label.place(x = 100, y = 30, relheight = 0.04)
-        self.word_count_label.configure(background="#90b7f5")
 
-        self.upload_button = tk.Button(self, text="Upload File", command=self.upload_file)
-        self.upload_button.place(x = 190, y = 30, relheight = 0.04)
-        self.upload_button.configure(background="#518ded")
+        self.email_sender_label = tk.Label(self, text="Scan Email Sender: eg.  johndoe@email.com")
+        self.email_sender_label.place(x = 100, y = 30, relheight = 0.04)
+        self.email_sender_label.configure(background="#b3c0c9")
+
+        # Scan Email Sender
+        self.email_sender = tk.Text(self)
+        self.email_sender.place(x = 100, y = 55, relheight=0.05, relwidth = 0.4)
+        self.email_sender.configure(font="Helvetica")
+
+
+        # Create label to display word count
+        self.word_count_label = tk.Label(self, text="Enter Text or ")
+        self.word_count_label.place(x = 100, y = 90, relheight = 0.04)
+        self.word_count_label.configure(background="#b3c0c9")
+
+        self.upload_button = tk.Button(self, text="Upload File", highlightbackground= "#b3c0c9", command=self.upload_file)
+        self.upload_button.place(x = 190, y = 90, relheight = 0.04)
         # Create text entry widget
         self.text_entry = tk.Text(self)
-        self.text_entry.place(x = 100, y = 60, relheight=.38, relwidth=.4)
+        self.text_entry.place(x = 100, y = 120, relheight=.35, relwidth=.4)
+        self.text_entry.configure(font="Helvetica")
 
         # Create count button
         self.scan_button = tk.Button(self, text="Scan for AI", command=self.ai_scan)
-        self.scan_button.place(x = 100, y = 300, relheight = 0.04)
-        self.scan_button.configure(background="#518ded")
+        self.scan_button.place(x = 100, y = 337, relheight = 0.04)
+        self.scan_button.configure(highlightbackground="#b3c0c9")
 
         self.scan__aiplag_button = tk.Button(self, text="AI URL Scan", command=self.ai_url_scan)
-        self.scan__aiplag_button.place(x = 185, y = 300, relheight = 0.04)
-        self.scan__aiplag_button.configure(background="#518ded")
+        self.scan__aiplag_button.place(x = 185, y = 337, relheight = 0.04)
+        self.scan__aiplag_button.configure(highlightbackground="#b3c0c9")
         
         self.scan__aiurl_button = tk.Button(self, text="Email Reputation Scan", command=self.scan_email)
-        self.scan__aiurl_button.place(x = 275, y = 300, relheight = 0.04)
-        self.scan__aiurl_button.configure(background="#518ded")
+        self.scan__aiurl_button.place(x = 275, y = 337, relheight = 0.04)
+        self.scan__aiurl_button.configure(highlightbackground="#b3c0c9")
 
         self.email_summary = tk.Text(self)
         self.email_summary.configure(state='disabled')
-        self.email_summary.place(x = 100, y = 350, relwidth = 0.4, relheight=0.3)
+        self.email_summary.place(x = 100, y = 370, relwidth = 0.4, relheight=0.3)
+        self.email_summary.configure(font="Helvetica")
 
+        labels = [ "Original", "Ai"]
+        green = '#74c26e'
+        red = '#BC2023'
+        colors = [ green, red]
+        fig, ax = plt.subplots()
+        pcts = [0.7, 0.3]
+        ax.pie(pcts, labels=labels, colors=colors, autopct='%1.1f%%')
+        plt.title("AI Generation Score (Text/File)")
+        fig.set_facecolor('#b3c0c9')
 
+        canvas = FigureCanvasTkAgg(fig, self)
+        canvas.get_tk_widget().place(x=500, y=55, relheight=0.35, relwidth=0.35)
+        
+        fig, ax = plt.subplots()
+        ax.pie(pcts, labels=labels, colors=colors, autopct='%1.1f%%')
+        fig.set_facecolor('#b3c0c9')
+        plt.title("AI Generation Score (URL)")
+        canvas = FigureCanvasTkAgg(fig, self)
+        canvas.get_tk_widget().place(x=500, y=315, relheight=0.35, relwidth=0.35)
+        
+        canvas.draw()
         # Run the Tkinter event loop
         self.mainloop()
 
     def upload_file(self):
         # Prompt user to select a file
-        filename = filedialog.askopenfilename(initialdir="/", title="Select a Text File",
-                                            filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
+        filename = filedialog.askopenfilename(initialdir="/", title="Select a File",
+                                           filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
+
         if filename:
             try:
                 # Open the selected file for reading
@@ -101,7 +135,7 @@ class App(tk.Tk):
         dict_string = response.text
         score = 0
         parsed_dict = self.parse_dict_string(dict_string)
-
+        print(parsed_dict)
         if parsed_dict:
             score = (parsed_dict["score"])
         original_pct = round(score["original"] * 100, 2)
@@ -109,12 +143,16 @@ class App(tk.Tk):
         pcts = [original_pct, ai_pct]
         # self.word_count_label.config(text=f'AI Generation Score: Original: {original_pct}% AI: {ai_pct} %')
         labels = [ "Original", "Ai"]
-        colors = [ '#50ad50','#cc2530']
+        green = '#74c26e'
+        red = '#BC2023'
+        colors = [ green, red]
         fig, ax = plt.subplots()
         ax.pie(pcts, labels=labels, colors=colors, autopct='%1.1f%%')
         plt.title("AI Generation Score (Text/File)")
+        fig.set_facecolor('#b3c0c9')
+
         canvas = FigureCanvasTkAgg(fig, self)
-        canvas.get_tk_widget().place(x=500, y=50, relheight=0.35, relwidth=0.35)
+        canvas.get_tk_widget().place(x=500, y=55, relheight=0.35, relwidth=0.35)
         return canvas.draw()
     
     def ai_url_scan(self):
@@ -142,18 +180,23 @@ class App(tk.Tk):
         pcts = [original_pct, ai_pct]
         # self.word_count_label.config(text=f'AI Generation Score: Original: {original_pct}% AI: {ai_pct} %')
         labels = [ "Original", "Ai"]
-        colors = [ '#50ad50','#cc2530']
+        green = '#74c26e'
+        red = '#BC2023'
+        colors = [ green, red]
         fig, ax = plt.subplots()
         ax.pie(pcts, labels=labels, colors=colors, autopct='%1.1f%%')
+        fig.set_facecolor('#b3c0c9')
         plt.title("AI Generation Score (URL)")
         canvas = FigureCanvasTkAgg(fig, self)
-        canvas.get_tk_widget().place(x=500, y=300, relheight=0.35, relwidth=0.35)
+        canvas.get_tk_widget().place(x=500, y=315, relheight=0.35, relwidth=0.35)
         return canvas.draw()
     
     def scan_email(self):
+        while(len(self.email_sender.get("1.0", "end-1c")) == 0):
+            self.email_summary.configure(state='disabled')
         self.email_summary.configure(state='normal')
 
-        email = self.text_entry.get("1.0", "end-1c")
+        email = self.email_sender.get("1.0", "end-1c")
         url = f"https://emailrep.io/{email}?summary=true"
 
         headers = {"accept": "application/json"}
@@ -161,9 +204,11 @@ class App(tk.Tk):
         response = requests.get(url, headers=headers)
         parsed_dict = self.parse_dict_string(response.text)
         summary = parsed_dict
-        if summary["status"] == 'fail':
+        try:
+            self.email_summary.delete("1.0", "end-1c")
+            print(summary)
+            self.email_summary.insert(tk.END, f'{summary["summary"]}')
+        except:
             print(summary['reason'])
             self.email_summary.insert(tk.END, f'{summary["reason"]}')
-        else:
-            self.email_summary.insert(tk.END, f'{summary["summary"]}')
         return self.email_summary.configure(state='disabled')
