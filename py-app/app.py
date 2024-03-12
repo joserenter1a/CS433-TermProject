@@ -63,12 +63,16 @@ class App(tk.Tk):
         self.email_summary.place(x = 100, y = 370, relwidth = 0.4, relheight=0.3)
         self.email_summary.configure(font="Helvetica")
 
+        self.docs_button = tk.Button(self, text="GitHub", command=self.open_docs)
+        self.docs_button.place(x = 5, y = 570, relheight=0.04)
+        self.docs_button.configure(font="Helvetica", highlightbackground="#b3c0c9")
+
         labels = [ "Original", "Ai"]
         green = '#74c26e'
         red = '#BC2023'
         colors = [ green, red]
         fig, ax = plt.subplots()
-        pcts = [0.7, 0.3]
+        pcts = [1, 0]
         ax.pie(pcts, labels=labels, colors=colors, autopct='%1.1f%%')
         plt.title("AI Generation Score (Text/File)")
         fig.set_facecolor('#b3c0c9')
@@ -173,6 +177,7 @@ class App(tk.Tk):
         dict_string = response.text
         score = 0
         parsed_dict = self.parse_dict_string(dict_string)
+        print(parsed_dict)
         if parsed_dict:
             score = (parsed_dict["score"])
         original_pct = round(score["original"] * 100, 2)
@@ -189,8 +194,10 @@ class App(tk.Tk):
         plt.title("AI Generation Score (URL)")
         canvas = FigureCanvasTkAgg(fig, self)
         canvas.get_tk_widget().place(x=500, y=315, relheight=0.35, relwidth=0.35)
+
         return canvas.draw()
     
+            
     def scan_email(self):
         while(len(self.email_sender.get("1.0", "end-1c")) == 0):
             self.email_summary.configure(state='disabled')
@@ -212,3 +219,8 @@ class App(tk.Tk):
             print(summary['reason'])
             self.email_summary.insert(tk.END, f'{summary["reason"]}')
         return self.email_summary.configure(state='disabled')
+    
+    def open_docs(self):
+        import webbrowser
+        link = 'https://github.com/joserenter1a/CS433-TermProject/tree/main'
+        webbrowser.open_new(link)
