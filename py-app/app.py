@@ -1,11 +1,11 @@
 import tkinter as tk
-from tkinter import ttk
 import requests 
 import json 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sys import platform as sys_pf
 from tkinter import filedialog
+from security import safe_requests
 
 
 if sys_pf == 'darwin':
@@ -208,7 +208,7 @@ class App(tk.Tk):
 
         headers = {"accept": "application/json"}
 
-        response = requests.get(url, headers=headers)
+        response = safe_requests.get(url, headers=headers)
         parsed_dict = self.parse_dict_string(response.text)
         summary = parsed_dict
         try:
